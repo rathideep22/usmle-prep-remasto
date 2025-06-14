@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Question {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  question    String
+  options     String   // JSON stringified array of options
+  correct     Int      // Index of correct answer (0-based)
+  explanation String?  // Optional explanation for the answer
+  subject     String?  // USMLE subject area (e.g., "Cardiology", "Pharmacology")
+  difficulty  String   @default("Medium") // Easy, Medium, Hard
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("questions")
+}
+
+model Score {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  score     Int      // Number of correct answers
+  total     Int      // Total number of questions attempted
+  percentage Float   // Calculated percentage score
+  duration  Int?     // Time taken in seconds (optional)
+  createdAt DateTime @default(now())
+
+  @@map("scores")
+} 
